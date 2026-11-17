@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Research Intelligence</title>
+<style>
+  :root{
+    --blue:#1d4ed8;
+    --blue-soft:#eff4ff;
+    --blue-border:#c7d7fb;
+    --ink:#1e293b;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --bg:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:Georgia,"Times New Roman",serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:32px 24px 80px;}
+  header.site{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:16px;margin-bottom:8px;
+  }
+  header.site h1{font-size:1.7rem;letter-spacing:.5px;}
+  header.site p{color:var(--muted);font-family:Helvetica,Arial,sans-serif;font-size:.85rem;margin-top:4px;}
+  section.block{
+    margin-top:40px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:24px;
+  }
+  .secnum{
+    font-family:Helvetica,Arial,sans-serif;
+    font-size:.7rem;font-weight:700;letter-spacing:2px;
+    color:var(--blue);text-transform:uppercase;
+  }
+  section.block h2{font-size:1.25rem;margin:4px 0 6px;}
+  .purpose{color:var(--muted);font-family:Helvetica,Arial,sans-serif;font-size:.85rem;margin-bottom:16px;}
+  .ui, button, input, textarea{
+    font-family:Helvetica,Arial,sans-serif;
+  }
+  input[type=text]{
+    width:100%;padding:10px 12px;border:1px solid var(--line);
+    border-radius:6px;font-size:.95rem;
+  }
+  input[type=text]:focus{outline:2px solid var(--blue-border);border-color:var(--blue);}
+  button{
+    background:var(--blue);color:#fff;border:none;border-radius:6px;
+    padding:9px 16px;font-size:.88rem;cursor:pointer;
+  }
+  button:hover{background:#1743b3;}
+  button.ghost{
+    background:#fff;color:var(--blue);border:1px solid var(--blue-border);
+  }
+  .hint{font-size:.82rem;color:var(--muted);margin-top:8px;font-style:italic;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .chip{
+    border:1px solid var(--blue-border);background:var(--blue-soft);
+    color:var(--blue);border-radius:999px;padding:6px 14px;font-size:.82rem;cursor:pointer;
+  }
+  .chip:hover{background:#dfe9ff;}
+  .directions{margin-top:14px;}
+  .directions li{margin:6px 0 6px 18px;font-size:.92rem;}
+
+  /* PESTLE */
+  .pestle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:16px;}
+  .p-card{border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:6px;padding:12px 14px;background:#fafbfe;}
+  .p-card h3{font-size:.95rem;color:var(--blue);margin-bottom:4px;font-family:Helvetica,Arial,sans-serif;}
+  .p-card p{font-size:.9rem;}
+
+  .reading{
+    margin-top:18px;border:1px solid var(--line);border-radius:6px;
+    padding:16px;font-size:.95rem;max-height:260px;overflow:auto;
+    user-select:text;background:#fff;
+  }
+  .reading mark{background:#fff3a3;color:inherit;}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;}
+  .tip{font-size:.8rem;color:var(--muted);}
+
+  .notes-area{
+    width:100%;min-height:90px;border:1px dashed var(--blue-border);
+    border-radius:6px;padding:10px 12px;background:var(--blue-soft);
+    font-size:.88rem;margin-top:10px;
+  }
+  .notes-area .empty{color:var(--muted);font-style:italic;}
+  .note-item{background:#fff;border:1px solid var(--line);border-radius:4px;padding:6px 10px;margin:6px 0;display:flex;justify-content:space-between;gap:8px;align-items:center;}
+  .note-item span{flex:1;}
+  .note-item button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:2px 6px;}
+  .note-item button:hover{color:#b91c1c;}
+  .paper-item{border-top:1px solid var(--line);padding:10px 4px;}
+  .paper-item:first-child{border-top:none;}
+  .paper-title{font-weight:700;font-size:.92rem;}
+  .paper-meta{color:var(--muted);font-size:.8rem;margin:2px 0 6px;font-family:Helvetica,Arial,sans-serif;}
+  .paper-abs{font-size:.88rem;margin-bottom:6px;}
+  .paper-link{font-size:.82rem;color:var(--blue);text-decoration:none;font-family:Helvetica,Arial,sans-serif;}
+  .paper-link:hover{text-decoration:underline;}
+  .papers-loading{color:var(--muted);font-style:italic;font-size:.85rem;}
+  .agent-box{margin-top:10px;border-top:1px dashed var(--blue-border);padding-top:8px;}
+  .agent-label{font-family:Helvetica,Arial,sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .agent-status{font-family:Helvetica,Arial,sans-serif;font-size:.75rem;color:var(--muted);font-style:italic;}
+  .agent-paper{margin:6px 0;}
+  .agent-paper .pt{font-size:.82rem;font-weight:700;line-height:1.3;}
+  .agent-paper .pm{font-size:.72rem;color:var(--muted);font-family:Helvetica,Arial,sans-serif;margin:1px 0;}
+  .agent-paper .pa{font-size:.8rem;line-height:1.45;color:var(--ink);margin:4px 0;}
+  .agent-paper a{font-size:.75rem;color:var(--blue);text-decoration:none;font-family:Helvetica,Arial,sans-serif;}
+  .agent-paper a:hover{text-decoration:underline;}
+
+  /* Compare */
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+  @media(max-width:720px){.compare-grid{grid-template-columns:1fr;}}
+  textarea{
+    width:100%;min-height:150px;padding:12px;border:1px solid var(--line);
+    border-radius:6px;font-size:.9rem;resize:vertical;
+  }
+  textarea:focus{outline:2px solid var(--blue-border);border-color:var(--blue);}
+  .panel{border:1px solid var(--line);border-radius:6px;padding:14px;font-size:.9rem;background:#fff;}
+  .panel h3{font-size:.85rem;font-family:Helvetica,Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+  .panel .placeholder{color:var(--muted);font-style:italic;font-size:.85rem;}
+  .missing-list li{margin:6px 0 6px 18px;font-size:.88rem;}
+  .missing-list .covered{color:#15803d;}
+  .missing-list .gap{color:#b45309;}
+  footer{margin-top:48px;text-align:center;color:var(--muted);font-size:.78rem;font-family:Helvetica,Arial,sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site">
+    <h1>AI Research Intelligence</h1>
+    <p>Research one topic through the PESTLE framework — collect notes, write a summary, compare it with an expert-style version.</p>
+  </header>
+
+  <!-- SECTION 1: TOPIC FINDER -->
+  <section class="block" id="sec-topic">
+    <div class="secnum">Section 1 · Topic Finder</div>
+    <h2>Choose what you want to research</h2>
+    <p class="purpose">Type a topic (or pick a sample below) to get research directions and generate a PESTLE reading brief.</p>
+    <div style="display:flex;gap:10px;">
+      <input type="text" id="topicInput" placeholder="e.g. Malaysian electric vehicle policy">
+      <button id="startBtn">Start Research</button>
+    </div>
+    <div class="chips" id="sampleChips"></div>
+    <div class="directions" id="directionsBox">
+      <h3 style="font-size:1rem;margin-bottom:6px;">Suggested research directions</h3>
+      <ul id="directionsList"></ul>
+      <p class="hint" id="dirHint">Pick a topic above to see useful directions.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2: PESTLE RESEARCH BRIEF -->
+  <section class="block" id="sec-brief">
+    <div class="secnum">Section 2 · PESTLE Research Brief</div>
+    <h2 id="briefTitle">Research Brief: Electric Vehicle Adoption in Malaysia</h2>
+    <p class="purpose">Read the brief below, then highlight any useful sentence with your mouse — it will be collected into your notes.</p>
+    <div class="pestle-grid" id="pestleGrid"></div>
+
+    <h3 style="margin-top:20px;font-size:1rem;">Reading Text (select text to highlight)</h3>
+    <div class="reading" id="readingArea"></div>
+    <div class="toolbar">
+      <button class="ghost" id="clearHighlightsBtn">Clear Highlights</button>
+      <button class="ghost" id="clearNotesBtn">Clear Notes</button>
+      <span class="tip">Tip: drag to select a sentence, then release — it is added to your notes automatically.</span>
+    </div>
+
+    <h3 style="margin-top:20px;font-size:1rem;">Real Academic Papers <span class="tip" id="papersStatus"></span></h3>
+    <p class="purpose" style="margin-bottom:10px;">Live results fetched from OpenAlex, a free and open scholarly index. Highlight a paper's abstract snippet to collect it as a note, or open the full paper with the link.</p>
+    <div class="notes-area" id="papersBox" style="background:#fff;border-style:solid;"><span class="empty">Press "Start Research" or a topic chip above to fetch real academic papers for the topic.</span></div>
+
+    <h3 style="margin-top:18px;font-size:1rem;">Working Notes <span class="tip" id="noteCount"></span></h3>
+    <div class="notes-area" id="notesBox"><span class="empty">No notes yet — highlight sentences from the reading text above to collect them here.</span></div>
+  </section>
+
+  <!-- SECTION 3: SUMMARY COMPARE -->
+  <section class="block" id="sec-compare">
+    <div class="secnum">Section 3 · Summary Compare</div>
+    <h2>Turn your notes into a strong summary</h2>
+    <p class="purpose">Draft your summary on the left, then compare it with an expert-style refined version and see what is missing.</p>
+    <div class="compare-grid">
+      <div>
+        <h3 style="font-size:.85rem;font-family:Helvetica,Arial,sans-serif;color:var(--muted);margin-bottom:8px;">Your Summary</h3>
+        <textarea id="userSummary" placeholder="Write or paste your own summary here, using your notes..."></textarea>
+        <div style="margin-top:10px;">
+          <button id="compareBtn">Compare with Expert Version</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="panel">
+          <h3>What is missing</h3>
+          <div id="missingPanel"><span class="placeholder">Write a summary and press Compare to see a gap analysis.</span></div>
+        </div>
+        <div class="panel">
+          <h3>Expert-style refined version</h3>
+          <div id="expertPanel"><span class="placeholder">The refined expert summary will appear here.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>AI Research Intelligence — sample study tool. All content is illustrative sample material, not real data or policy facts. Nothing is saved between visits.</footer>
+</div>
+
+<script>
+// ---------- Sample topic library (illustrative sample content only) ----------
+const TOPICS = {
+  "Electric Vehicle Adoption in Malaysia": {
+    directions: [
+      "How are EV incentives and tax exemptions shaping buyer behaviour in Malaysia?",
+      "What role do charging infrastructure and battery standards play in adoption?",
+      "How do local automakers and regional trade agreements influence the EV market?"
+    ],
+    pestle: {
+      Political: "National low-carbon mobility ambitions and EV-friendly trade policy signal long-term political support for electrification.",
+      Economic: "Import duty exemptions and income tax relief for EV owners lower upfront costs, though affordability remains a hurdle for mass-market buyers.",
+      Social: "Urban consumers view EVs as modern and status-affirming, while rural buyers weigh range anxiety and service network concerns.",
+      Technological: "Charging network build-out and battery-swapping pilots are improving convenience, supported by growing local engineering capability.",
+      Legal: "Vehicle type-approval, charging-safety standards, and EV-specific road regulations are being updated to accommodate new technology.",
+      Environmental: "Electrification supports emission-reduction goals, but the lifecycle footprint of batteries and the grid's energy mix matter."
+    },
+    reading: [
+      "Malaysia's move toward electric vehicles reflects a broader regional shift in how governments treat the car industry as an industrial-policy lever.",
+      "Tax incentives have made premium electric models noticeably more attainable for middle- and upper-income households in urban areas.",
+      "Analysts of the sample brief note that charging coverage along highways and in secondary cities will decide whether adoption spreads beyond city centres.",
+      "Local carmakers face a strategic choice between partnering with foreign EV platforms and developing domestic battery and drivetrain capability.",
+      "Consumer surveys in the sample material suggest that resale-value uncertainty remains one of the strongest psychological barriers for first-time EV buyers.",
+      "Environmental groups in the sample discussion argue that an EV transition is only as clean as the electricity grid that powers it."
+    ],
+    expertThemes: ["incentives","charging infrastructure","industrial policy / local automakers","consumer barriers","environmental trade-offs"]
+  },
+  "Palm Oil Sustainability in Malaysia": {
+    directions: [
+      "How do certification schemes affect smallholder livelihoods and market access?",
+      "What is the relationship between palm oil expansion and forest conservation policy?",
+      "How do export market requirements shape Malaysian production practices?"
+    ],
+    pestle: {
+      Political: "Government certification mandates and export diplomacy shape how the industry positions itself internationally.",
+      Economic: "Smallholder income stability depends on certification costs being offset by price premiums and market access.",
+      Social: "Labour conditions and community land rights are central to the sector's social licence to operate.",
+      Technological: "Satellite monitoring and traceability tools are making supply-chain verification faster and cheaper.",
+      Legal: "Importing jurisdictions' due-diligence laws effectively set de facto standards for Malaysian producers.",
+      Environmental: "Deforestation, peatland conversion, and biodiversity loss remain the core environmental criticisms to manage."
+    },
+    reading: [
+      "The palm oil debate in Malaysia sits at the intersection of rural livelihoods, export economics, and environmental commitments.",
+      "Sample commentary highlights that certification schemes help large plantations comply more easily than smallholders, raising equity questions.",
+      "Traceability technology in the sample material is described as a quiet revolution, letting buyers verify origin claims across complex supply chains.",
+      "Import-market due-diligence rules in the sample discussion effectively export regulatory pressure to producing countries.",
+      "Conservation groups in the sample brief argue that protecting peatlands delivers outsized carbon benefits relative to its cost.",
+      "Industry associations in the sample material counter that palm is the most land-efficient edible oil per hectare produced."
+    ],
+    expertThemes: ["certification and smallholders","traceability technology","export market regulation","conservation trade-offs","land-efficiency arguments"]
+  },
+  "Digital Banking Growth in Malaysia": {
+    directions: [
+      "How do digital banking licences change competition for traditional banks?",
+      "What does financial inclusion look like for underserved Malaysian communities?",
+      "How are regulators balancing innovation with consumer protection?"
+    ],
+    pestle: {
+      Political: "Regulators see licensed digital banks as a tool for financial inclusion and fintech-sector development.",
+      Economic: "Lower operating costs let digital banks target segments traditional banks considered unprofitable.",
+      Social: "Younger, mobile-first consumers expect banking to feel like any other app experience.",
+      Technological: "Cloud-native cores, e-KYC onboarding, and AI credit scoring define the digital bank tech stack.",
+      Legal: "Capital requirements, deposit-protection rules, and data-protection law frame what digital banks may do.",
+      Environmental: "Branchless models reduce physical footprints, though data-centre energy use is a growing consideration."
+    },
+    reading: [
+      "Digital banking licences in the sample brief are framed less as a technology story and more as a competition-policy experiment.",
+      "The sample material notes that serving thin-file customers requires underwriting models built on alternative data rather than credit history.",
+      "Traditional banks in the sample discussion respond by accelerating their own app experiences and partnering with fintechs.",
+      "Trust in the sample commentary is described as the decisive variable: consumers accept app-only banking only when deposit protection is visible.",
+      "Regulators in the sample material deliberately phase licence conditions to watch for predatory lending before scaling approval scopes.",
+      "Financial-inclusion advocates in the sample brief argue that access without literacy can simply digitalise existing debt problems."
+    ],
+    expertThemes: ["licensing and competition","alternative credit scoring","incumbent response","consumer trust","financial inclusion vs. literacy"]
+  }
+};
+
+const DEFAULT_TOPIC = "Electric Vehicle Adoption in Malaysia";
+let currentTopic = null;
+let notes = [];
+
+const $ = id => document.getElementById(id);
+
+// ---------- Topic Finder ----------
+function renderChips(){
+  const box = $("sampleChips");
+  box.innerHTML = "";
+  Object.keys(TOPICS).forEach(t=>{
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = t;
+    b.onclick = ()=>{ chooseTopic(t); fetchPapers(t); };
+    box.appendChild(b);
+  });
+}
+
+function chooseTopic(topic){
+  currentTopic = topic;
+  $("topicInput").value = topic;
+  const data = TOPICS[topic] || genericBrief(topic);
+  renderDirections(data.directions, false);
+  renderBrief(topic, data);
+  $("dirHint").textContent = "Directions above are sample suggestions to guide your reading below.";
+}
+
+function renderDirections(list, isGeneric){
+  const ul = $("directionsList");
+  ul.innerHTML = "";
+  (list||[]).forEach(d=>{
+    const li = document.createElement("li");
+    li.textContent = d;
+    ul.appendChild(li);
+  });
+}
+
+function genericBrief(topic){
+  const T = topic;
+  return {
+    directions: [
+      "Which political or regulatory forces most affect "+T+"?",
+      "What economic pressures and opportunities shape "+T+"?",
+      "How do social attitudes, technology, law, and the environment intersect with "+T+"?"
+    ],
+    pestle: {
+      Political: "Identify the government policies, trade positions, and institutional priorities relevant to "+T+".",
+      Economic: "Consider costs, market demand, funding sources, and economic risks connected to "+T+".",
+      Social: "Examine public attitudes, demographics, and cultural factors influencing "+T+".",
+      Technological: "Assess the tools, infrastructure, and innovation trends that enable or constrain "+T+".",
+      Legal: "Note the regulations, standards, and compliance duties that apply to "+T+".",
+      Environmental: "Weigh the ecological impacts and sustainability considerations tied to "+T+"."
+    },
+    reading: [
+      "This reading brief for "+T+" is a starter framework drawn from sample material prepared for this exercise.",
+      "Political context in the sample material is treated as the starting lens, since policy usually sets the boundaries for everything else.",
+      "Economic analysis in the sample brief asks who pays, who benefits, and where the money flows in connection with "+T+".",
+      "Social factors in the sample discussion capture how public perception can accelerate or stall any change related to "+T+".",
+      "Technological and legal factors in the sample material often move together, as new tools arrive ahead of the rules that govern them.",
+      "Environmental considerations in the sample brief close the loop, asking what long-term costs are pushed onto shared resources."
+    ],
+    expertThemes: ["political context","economic drivers","social attitudes","technology and law","environmental impact"]
+  };
+}
+
+function renderBrief(topic, data){
+  $("briefTitle").textContent = "Research Brief: " + topic;
+  const grid = $("pestleGrid");
+  grid.innerHTML = "";
+  Object.entries(data.pestle).forEach(([k,v])=>{
+    const d = document.createElement("div");
+    d.className = "p-card";
+    const h = document.createElement("h3");
+    h.textContent = k;
+    const p = document.createElement("p");
+    p.textContent = v;
+    d.appendChild(h); d.appendChild(p);
+    // Per-factor research agent
+    const agent = document.createElement("div");
+    agent.className = "agent-box";
+    agent.dataset.factor = k;
+    const label = document.createElement("div");
+    label.className = "agent-label";
+    label.textContent = k + " research agent";
+    const status = document.createElement("div");
+    status.className = "agent-status";
+    status.textContent = "searching…";
+    agent.appendChild(label); agent.appendChild(status);
+    d.appendChild(agent);
+    grid.appendChild(d);
+    runFactorAgent(topic, k, agent, status);
+  });
+  const ra = $("readingArea");
+  ra.innerHTML = "";
+  data.reading.forEach(s=>{
+    const p = document.createElement("p");
+    p.style.marginBottom = "10px";
+    p.textContent = s;
+    ra.appendChild(p);
+  });
+}
+
+// ---------- Highlight & collect ----------
+function collectSelection(){
+  const sel = window.getSelection();
+  if(!sel || sel.isCollapsed) return;
+  const text = sel.toString().trim();
+  if(text.length < 3) return;
+  const ra = $("readingArea");
+  if(!ra.contains(sel.anchorNode) || !ra.contains(sel.focusNode)) return;
+
+  // Wrap each range's text in <mark>
+  const range = sel.getRangeAt(0);
+  const mark = document.createElement("mark");
+  try{ range.surroundContents(mark); }catch(e){
+    const frag = range.extractContents();
+    mark.appendChild(frag);
+    range.insertNode(mark);
+  }
+  sel.removeAllRanges();
+  addNote(text);
+}
+
+function addNote(text){
+  if(notes.some(n=>n.text===text)) return;
+  notes.push({text, id: Date.now()+Math.random()});
+  renderNotes();
+}
+
+function renderNotes(){
+  const box = $("notesBox");
+  $("noteCount").textContent = notes.length ? "("+notes.length+" collected)" : "";
+  if(!notes.length){
+    box.innerHTML = '<span class="empty">No notes yet — highlight sentences from the reading text above to collect them here.</span>';
+    return;
+  }
+  box.innerHTML = "";
+  notes.forEach(n=>{
+    const item = document.createElement("div");
+    item.className = "note-item";
+    const s = document.createElement("span");
+    s.textContent = "\u201C" + n.text + "\u201D";
+    const b = document.createElement("button");
+    b.textContent = "remove";
+    b.onclick = ()=>{ notes = notes.filter(x=>x.id!==n.id); renderNotes(); };
+    item.appendChild(s); item.appendChild(b);
+    box.appendChild(item);
+  });
+}
+
+$("clearHighlightsBtn").onclick = ()=>{
+  document.querySelectorAll("#readingArea mark").forEach(m=>{
+    m.replaceWith(document.createTextNode(m.textContent));
+  });
+  $("readingArea").normalize();
+};
+$("clearNotesBtn").onclick = ()=>{ notes = []; renderNotes(); };
+
+// ---------- Compare & refine ----------
+function wordCount(s){ return s.trim().split(/\s+/).filter(Boolean).length; }
+
+function analyse(summary){
+  const lower = summary.toLowerCase();
+  const data = TOPICS[currentTopic] || genericBrief(currentTopic || "your topic");
+  const items = data.expertThemes.map(t=>{
+    const words = t.split(/\s+/).map(w=>w.replace(/[^a-z]/g,"")).filter(w=>w.length>3);
+    const covered = words.some(w=>lower.includes(w.slice(0, Math.max(4, w.length-2))));
+    return {theme:t, covered};
+  });
+  return items;
+}
+
+$("compareBtn").onclick = ()=>{
+  const summary = $("userSummary").value.trim();
+  const mp = $("missingPanel"), ep = $("expertPanel");
+  if(wordCount(summary) < 5){
+    mp.innerHTML = '<span class="placeholder">Write at least a short paragraph (a few words) before comparing.</span>';
+    ep.innerHTML = '<span class="placeholder">The refined expert summary will appear here.</span>';
+    return;
+  }
+  const items = analyse(summary);
+  const missing = items.filter(i=>!i.covered);
+  const covered = items.filter(i=>i.covered);
+
+  let html = ["<ul class='missing-list'>"];
+  covered.forEach(i=> html.push("<li class='covered'>\u2713 Covered: "+i.theme+"</li>"));
+  missing.forEach(i=> html.push("<li class='gap'>\u26A0 Missing: consider addressing <strong>"+i.theme+"</strong></li>"));
+  if(!covered.length) html.push("<li class='gap'>\u26A0 Your summary does not yet connect to the brief's main themes.</li>");
+  const wc = wordCount(summary);
+  if(wc > 120) html.push("<li class='gap'>\u26A0 Length: at "+wc+" words, try condensing to 60\u2013100 words for focus.</li>");
+  else if(wc < 30) html.push("<li class='gap'>\u26A0 Depth: at "+wc+" words, add specific points from your notes.</li>");
+  html.push("</ul>");
+  mp.innerHTML = html.join("");
+
+  const notesText = notes.map(n=>"\u201C"+n.text+"\u201D").join(" ");
+  ep.innerHTML =
+    "<p><em>Topic:</em> " + (currentTopic||"your topic") + "</p>" +
+    "<p style='margin-top:8px;'>Drawing on the brief and the collected notes"
+    + (notes.length ? " ("+notes.length+" highlighted note"+(notes.length>1?"s":"")+" were used)" : "") +
+    ", a strong summary would:</p>" +
+    "<ul style='margin:8px 0 0 18px;'>" +
+      items.map(i=>"<li style='margin:4px 0;'>state a clear position on <strong>"+i.theme+"</strong>, supported by one concrete point from the reading;</li>").join("") +
+    "</ul>" +
+    "<p style='margin-top:10px;'>A refined expert-style version would open with the central tension of the topic, weave in "+items.length+" evidence points across the PESTLE dimensions, and close with one forward-looking implication \u2014 all in roughly 80 words. Compare your draft against that structure, then revise it in the box on the left.</p>";
+};
+
+// ---------- Per-factor research agents (one agent per PESTLE dimension) ----------
+const FACTOR_QUERIES = {
+  Political:    ["government policy", "regulation", "political economy"],
+  Economic:     ["economic impact", "cost benefit", "market"],
+  Social:       ["public perception", "social acceptance", "consumer behaviour"],
+  Technological:["technology", "innovation", "infrastructure"],
+  Legal:        ["law", "legal framework", "compliance"],
+  Environmental:["environmental impact", "sustainability", "climate"]
+};
+
+// Map PESTLE card headings (which vary by language/label) to agent query terms
+function factorQueryTerms(factor){
+  const key = Object.keys(FACTOR_QUERIES).find(k => factor.toLowerCase().startsWith(k.toLowerCase().slice(0,5)));
+  return FACTOR_QUERIES[key] || ["research", "policy", "analysis"];
+}
+
+async function runFactorAgent(topic, factor, agentBox, statusEl){
+  const terms = factorQueryTerms(factor);
+  const query = topic + " " + terms[0];
+  const url = "https://api.openalex.org/works?per-page=5&sort=relevance_score:desc&mailto=student@example.com&search="
+    + encodeURIComponent(query);
+  try{
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    const data = await resp.json();
+    const works = (data.results||[])
+      .filter(w=>(w.display_name||w.title))
+      .filter(w=>abstractFromInverted(w.abstract_inverted_index).length > 80);
+    const shown = works.slice(0, 3);
+    if(!shown.length){
+      statusEl.textContent = "no papers with abstracts found for this factor";
+      return;
+    }
+    statusEl.textContent = "deep research — " + shown.length + " papers with findings:";
+    shown.forEach(w=>{
+      const year = w.publication_year || "n.d.";
+      const venue = (w.primary_location && w.primary_location.source && w.primary_location.source.display_name) || "";
+      const cited = typeof w.cited_by_count === "number" ? w.cited_by_count.toLocaleString()+" citations" : "";
+      const meta = [year, venue, cited].filter(Boolean).join(" · ");
+      const abstract = abstractFromInverted(w.abstract_inverted_index);
+      const item = document.createElement("div");
+      item.className = "agent-paper";
+      const t = document.createElement("div"); t.className="pt"; t.textContent = w.display_name || w.title;
+      const m = document.createElement("div"); m.className="pm"; m.textContent = meta;
+      const abs = document.createElement("div"); abs.className="pa"; abs.textContent = abstract.slice(0, 420) + (abstract.length>420 ? "…" : "");
+      const a = document.createElement("a"); a.target="_blank"; a.rel="noopener";
+      a.href = (w.doi || (w.primary_location && w.primary_location.landing_page_url) || w.id);
+      a.textContent = "Open full paper \u2197";
+      item.appendChild(t); item.appendChild(m); item.appendChild(abs); item.appendChild(a);
+      agentBox.appendChild(item);
+    });
+  }catch(err){
+    statusEl.textContent = "offline — could not reach OpenAlex";
+  }
+}
+
+// ---------- Real academic papers via OpenAlex (free, keyless) ----------
+function abstractFromInverted(inv){
+  if(!inv) return "";
+  const arr = [];
+  for(const [word, positions] of Object.entries(inv)){
+    (Array.isArray(positions) ? positions : []).forEach(p=>{ arr[p] = word; });
+  }
+  return arr.filter(Boolean).join(" ");
+}
+
+async function fetchPapers(topic){
+  const box = $("papersBox"), status = $("papersStatus");
+  status.textContent = "";
+  box.innerHTML = '<span class="papers-loading">Fetching academic papers for "'+topic+'" from OpenAlex…</span>';
+  const url = "https://api.openalex.org/works?per-page=5&sort=relevance_score:desc&mailto=student@example.com&search="
+    + encodeURIComponent(topic);
+  try{
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    const data = await resp.json();
+    const works = (data.results||[]).filter(w=>w.title || w.display_name);
+    if(!works.length){
+      box.innerHTML = '<span class="empty">No matching papers found for this topic. Try broader wording, e.g. add a country or field name.</span>';
+      return;
+    }
+    box.innerHTML = "";
+    works.forEach(w=>{
+      const title = w.display_name || w.title;
+      const year = w.publication_year || "n.d.";
+      const venue = (w.primary_location && w.primary_location.source && w.primary_location.source.display_name) || "";
+      const cited = typeof w.cited_by_count === "number" ? w.cited_by_count.toLocaleString() : null;
+      const meta = [year, venue, cited!==null ? cited+" citations" : null].filter(Boolean).join(" · ");
+      const abstract = abstractFromInverted(w.abstract_inverted_index);
+      const snippet = abstract ? abstract.slice(0, 320) + (abstract.length>320 ? "…" : "") : "Abstract not available for this paper.";
+      const item = document.createElement("div");
+      item.className = "paper-item";
+      const t = document.createElement("div"); t.className="paper-title"; t.textContent = title;
+      const m = document.createElement("div"); m.className="paper-meta"; m.textContent = meta;
+      const a = document.createElement("div"); a.className="paper-abs"; a.textContent = snippet;
+      const link = document.createElement("a"); link.className="paper-link"; link.target="_blank"; link.rel="noopener";
+      link.href = (w.doi || (w.primary_location && w.primary_location.landing_page_url) || w.id);
+      link.textContent = "Open paper \u2197";
+      item.appendChild(t); item.appendChild(m); item.appendChild(a); item.appendChild(link);
+      box.appendChild(item);
+    });
+    status.textContent = "("+works.length+" papers · open access index)";
+  }catch(err){
+    box.innerHTML = '<span class="empty">Could not reach OpenAlex (offline or network blocked). The sample brief and highlighting above still work fully offline.</span>';
+    status.textContent = "";
+  }
+}
+
+// ---------- Init ----------
+$("startBtn").onclick = ()=>{
+  const t = $("topicInput").value.trim();
+  if(!t) return;
+  chooseTopic(t);
+  fetchPapers(t);
+};
+$("topicInput").addEventListener("keydown", e=>{ if(e.key==="Enter") $("startBtn").click(); });
+document.addEventListener("mouseup", collectSelection);
+
+renderChips();
+chooseTopic(DEFAULT_TOPIC);
+renderNotes();
+fetchPapers(DEFAULT_TOPIC);
+</script>
+</body>
+</html>
